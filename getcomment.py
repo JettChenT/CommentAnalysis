@@ -1,8 +1,8 @@
-from bs4 import BeautifulSoup
+# from bs4 import BeautifulSoup
 import urllib.request
 import requests
 import re
-import scrapy
+# import scrapy
 import os
 def stp_gbk(comment):
     encoded = str(comment).encode('gbk',errors='replace')
