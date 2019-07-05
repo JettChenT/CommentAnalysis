@@ -1,9 +1,11 @@
-# from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup
 import urllib.request
 import requests
 import re
 # import scrapy
 import os
+from json import loads
+PAGEMAX= 2
 def stp_gbk(comment):
     encoded = str(comment).encode('gbk',errors='replace')
     decoded = encoded.decode('gbk')
@@ -29,8 +31,8 @@ def getcomment(link):
             avnum = ''.join(lav)
             pn = 1
             while True:
-                link = 'https://api.bilibili.com/x/v2/reply?jsonp=jsonp&pn={pn}&type=1&oid={oid}&sort=1'.format(oid=avnum,pn=str(pn))
-                data = requests.get(link).json()
+                url = 'https://api.bilibili.com/x/v2/reply?jsonp=jsonp&pn={pn}&type=1&oid={oid}&sort=1'.format(oid=avnum,pn=str(pn))
+                data = requests.get(url).json()
                 if data['code'] == 0:
                     if data['data']['replies']:
                         for item in data['data']['replies']:
@@ -39,14 +41,43 @@ def getcomment(link):
                         break
                 else:
                     break
-                if pn == 4:
+                if pn == PAGEMAX:
                     break
                 pn += 1
             if comments == []:
                 return comments,3
             return comments,0
         elif 'youku' in link:
-            pass
+            commentlist = []
+            p = urllib.request.urlopen(link)
+            soup = BeautifulSoup(p,'html.parser')
+            page = str(soup)
+            regex = re.compile(r"videoId: '\d*'")
+            videoId = re.findall(regex,page)[0][10:-1]
+            temp = "https://p.comments.youku.com/ycp/comment/pc/commentList?jsoncallback=n_commentList&app=100-DDwODVkv&objectId={objid}&objectType=1&listType=0&currentPage={pn}&pageSize=30&sign=552d9a88b24f4bd83a57b09536bdd4d5&time=1562134877"
+            pn=1
+            while True:
+                url = temp.format(objid=videoId,pn=str(pn))
+                r = requests.get(url)
+                text = r.text
+                lt = list(text)
+                start = lt.index('(')
+                end = lt.index(')')
+                res = ''.join(lt[start+1:end])
+                data = loads(res)
+                if data['code']==0:
+                    if data['data']['comment']:
+                        for item in data['data']['comment']:
+                            commentlist.append(item['content'])
+                    else:
+                        break
+                else:
+                    break
+                if pn==PAGEMAX:
+                    break
+                pn+=1
+                # print(commentlist)
+            return commentlist,0
         return [],1 #1 stands for unsupported site
     else:
         return [],2 #2 stands for not a link
