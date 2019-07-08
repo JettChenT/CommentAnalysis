@@ -99,7 +99,7 @@ def getcomment(link):
                 if pn == PAGEMAX:
                     break
                 pn+=1
-            print(commentList)
+            # print(commentList)
             return commentList,0
         return [],1 #1 stands for unsupported site
     else:
