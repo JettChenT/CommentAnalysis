@@ -20,7 +20,7 @@ def main():
     elif status == 4:
         return "开发中..."
     elif status == 0:
-        print(comments)
+        # print(comments)
         return str(analysis(comments))
 
 if __name__ == '__main__':

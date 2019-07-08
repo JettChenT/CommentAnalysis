@@ -14,6 +14,6 @@
 ### 支持的视频网站：
 - www.bilibili.com
 - www.youku.com
-
+- v.qq.com
 ### 评分：
 1为最高分，-1为最低分

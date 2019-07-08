@@ -78,6 +78,29 @@ def getcomment(link):
                 pn+=1
                 # print(commentlist)
             return commentlist,0
+        elif 'v.qq.com' in link:
+            p = urllib.request.urlopen(link)
+            soup = BeautifulSoup(p)
+            page = str(soup)
+            regex = re.compile(r"\"comment_id\":\"\d*\"")
+            commentId=re.findall(regex,page)[0]
+            commentId = commentId[14:-1]
+            temp= "https://video.coral.qq.com/varticle/{commentId}/comment/v2?callback=_varticle{commentId}commentv2&orinum=10&oriorder=o&pageflag={pn}&cursor=0&scorecursor=0&orirepnum=2&reporder=o&reppageflag=1&source=132&_=1562297494182"
+            pn = 1
+            while True:
+                url = temp.format(commentId=commentId,pn=pn)
+                r = requests.get(url)
+                data = loads(r.text[29:-1])
+                commentList = []
+                for item in data['data']['oriCommList']:
+                    commentList.append(item['content'])
+                if not data['data']['hasnext']:
+                    break
+                if pn == PAGEMAX:
+                    break
+                pn+=1
+            print(commentList)
+            return commentList,0
         return [],1 #1 stands for unsupported site
     else:
         return [],2 #2 stands for not a link
