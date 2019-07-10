@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Analysis</title>
+    <style>
+        body{
+            background-color: aqua;
+        }
+        .chartContainer{
+            height: 500px;
+            width: 1000px;
+            margin:auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="chartContainer">
+        <canvas id="Canvas"></canvas>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/patternomaly@1.3.2/dist/patternomaly.min.js"></script>
+    <script>
+        var ctx = document.getElementById('Canvas').getContext('2d');
+        data = {{ data|safe }};
+        ctx.fillstyle='white';
+        ctx.fillRect(0,0,Canvas.width, Canvas.height);
+        var barchart = new Chart(ctx,{
+            type:'bar',
+            data:{
+                labels:['-1','-0.9','-0.8','-0.7','-0.6','-0.5','-0.4','-0.3','-0.2','-0.1','0','0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9','1'],
+                datasets:[
+                    {
+                        label:"评论数量",
+                        data:data,
+                        backgroundColor:"#ff6384"
+                    }
+                ]
+
+            },
+            options:{
+                title:{
+                    display:true,
+                    text: "评论情感直方图📊"
+                },
+                scales:{
+                    xAxes:[{
+                        display:true,
+                        scaleLabel:{
+                            display:true,
+                            labelString:"情感指数"
+                        }
+                    }] 
+                }
+            }
+        });
+    </script>
+</body>
+</html>

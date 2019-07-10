@@ -1,16 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
     <title>Sentiment app</title>
+    <style>
+        body {
+            background-color: aqua;
+            overflow: hidden;
+        }
+
+        .invisible {
+            display: none;
+        }
+
+        .visible {
+            display: block;
+        }
+
+        #form {
+            width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-top: 300px;
+        }
+
+        /* .message{
+            position:absolute;
+            top:20px;
+            right:20px;
+        } */
+    </style>
+    <script
+    src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    crossorigin="anonymous"></script>
 </head>
+
 <body>
-    <h1>你好，我是一个帮助你检测视频评论情绪的工具.</h1>
-    <form action="/analysis" method="POST">
-        <input type="text" name="url">
-        <input type="submit" value="submit">
+    <!-- <h1 class="ui header">你好，我是一个帮助你检测视频评论情绪的工具.</h1> -->
+    <div class="ui disabled dimmer" id = "loader">
+            <div class="ui text loader">加载中...</div>
+    </div>
+    <form action="/analysis" method="POST" id="form" class="ui big form">
+        <div class="field">
+            <label>视频链接</label>
+            <div class="ui labeled action input" id="inputArea">
+                <div class="ui label">
+                    https://
+                </div>
+                <input type="text" placeholder="视频链接" name="url">
+                <button type="button" class="ui teal animated button" onclick="validate()">
+                    <div class='visible content'>
+                        分析
+                    </div>
+                    <div class="hidden content">
+                        <i class="chart bar icon"></i>
+                    </div>
+                </button>
+            </div>
+            <div class="ui error message">
+                <i class="close icon"></i>
+                <div class="header" id="errmsg"></div>
+            </div>
+        </div>
+        <!-- <div class="ui error message">
+                <div class="header">请输入有效链接</div>
+        </div>
+        <br> -->
     </form>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+    <script>
+
+    </script>
+    <script>
+        $('.message .close')
+            .on('click', function () {
+                $(this)
+                    .closest('.message')
+                    .transition('fade')
+                    ;
+            })
+            ;
+        var expression = /(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/i;
+        var regex = new RegExp(expression)
+        errmsg = document.getElementById("errmsg")
+        form = document.getElementById("form")
+        function validate() {
+            if (form.url.value == "") {
+                form.className = "ui big form error"
+                errmsg.innerHTML = "你没有输入链接"
+            }else if(!form.url.value.match(regex)){
+                form.className = "ui big form error"
+                errmsg.innerHTML = "请输入有效链接"
+            }else {
+                form.className = "ui big form"
+                inputArea.className="ui labeled action input"
+                loader.className="ui active dimmer"
+                form.submit()
+            }
+        }
+    </script>
 </body>
+
 </html>

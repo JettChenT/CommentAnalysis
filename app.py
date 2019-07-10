@@ -21,7 +21,7 @@ def main():
         return "开发中..."
     elif status == 0:
         # print(comments)
-        return str(analysis(comments))
+        return render_template('analysis.html',data=analysis(comments))
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -10,7 +10,9 @@ def stp_gbk(comment):
     encoded = str(comment).encode('gbk',errors='replace')
     decoded = encoded.decode('gbk')
     return decoded
-def getcomment(link):
+def getcomment(link:str):
+    link.strip("https://")
+    link = "https://"+link
     regex = re.compile(
         r'^(?:http|ftp)s?://' # http:// or https://
         r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|' #domain...
@@ -62,13 +64,13 @@ def getcomment(link):
                 text = r.text
                 lt = list(text)
                 start = lt.index('(')
-                end = lt.index(')')
+                end = -1
                 res = ''.join(lt[start+1:end])
                 data = loads(res)
                 if data['code']==0:
                     if data['data']['comment']:
                         for item in data['data']['comment']:
-                            commentlist.append(item['content'])
+                            commentlist.append(stp_gbk(item['content']))
                     else:
                         break
                 else:
