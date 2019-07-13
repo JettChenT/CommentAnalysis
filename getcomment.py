@@ -5,7 +5,10 @@ import re
 # import scrapy
 import os
 from json import loads
-PAGEMAX= 2
+with open('config.json') as f:
+    data = loads(f)
+    commentsMax = data['commentsMax']
+    PAGEMAX = data['pageMax']
 def stp_gbk(comment):
     encoded = str(comment).encode('gbk',errors='replace')
     decoded = encoded.decode('gbk')
@@ -32,6 +35,7 @@ def getcomment(link:str):
             lav.remove('v')
             avnum = ''.join(lav)
             pn = 1
+            count = 0
             while True:
                 url = 'https://api.bilibili.com/x/v2/reply?jsonp=jsonp&pn={pn}&type=1&oid={oid}&sort=1'.format(oid=avnum,pn=str(pn))
                 data = requests.get(url).json()
@@ -39,6 +43,9 @@ def getcomment(link:str):
                     if data['data']['replies']:
                         for item in data['data']['replies']:
                             comments.append(stp_gbk(item['content']['message']))
+                            count+=1
+                            if count == CommentsMax:
+                                return comments,0
                     else:
                         break
                 else:
@@ -58,6 +65,7 @@ def getcomment(link:str):
             videoId = re.findall(regex,page)[0][10:-1]
             temp = "https://p.comments.youku.com/ycp/comment/pc/commentList?jsoncallback=n_commentList&app=100-DDwODVkv&objectId={objid}&objectType=1&listType=0&currentPage={pn}&pageSize=30&sign=552d9a88b24f4bd83a57b09536bdd4d5&time=1562134877"
             pn=1
+            cont = 0
             while True:
                 url = temp.format(objid=videoId,pn=str(pn))
                 r = requests.get(url)
@@ -71,6 +79,8 @@ def getcomment(link:str):
                     if data['data']['comment']:
                         for item in data['data']['comment']:
                             commentlist.append(stp_gbk(item['content']))
+                            if cont == CommentsMax:
+                                return commentlist,0
                     else:
                         break
                 else:
@@ -89,6 +99,7 @@ def getcomment(link:str):
             commentId = commentId[14:-1]
             temp= "https://video.coral.qq.com/varticle/{commentId}/comment/v2?callback=_varticle{commentId}commentv2&orinum=10&oriorder=o&pageflag={pn}&cursor=0&scorecursor=0&orirepnum=2&reporder=o&reppageflag=1&source=132&_=1562297494182"
             pn = 1
+            cont = 0
             while True:
                 url = temp.format(commentId=commentId,pn=pn)
                 r = requests.get(url)
@@ -96,6 +107,8 @@ def getcomment(link:str):
                 commentList = []
                 for item in data['data']['oriCommList']:
                     commentList.append(item['content'])
+                    if cont == CommentsMax:
+                        return commentList,0
                 if not data['data']['hasnext']:
                     break
                 if pn == PAGEMAX:

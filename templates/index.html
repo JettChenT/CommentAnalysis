@@ -81,7 +81,7 @@
         </div>
         <br> -->
     </form>
-    <a href="ca-docs.rtfd.io" class="circular ui icon button white" id="helpbtn">
+    <a href="https://ca-docs.rtfd.io" class="circular ui icon button white" id="helpbtn">
         <i class="question icon"></i>
     </a>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
@@ -115,6 +115,10 @@
                 errContainer.className = "ui error message animated flipInX"
                 errmsg.innerHTML = "你没有输入链接"
             } else if (!url.match(regex)) {
+                form.className = "ui big form error"
+                errContainer.className = "ui error message animated flipInX"
+                errmsg.innerHTML = "请输入有效链接"
+            } else if(url.search('http')!=-1){
                 form.className = "ui big form error"
                 errContainer.className = "ui error message animated flipInX"
                 errmsg.innerHTML = "请输入有效链接"
