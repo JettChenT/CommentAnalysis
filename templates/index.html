@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
     <title>Sentiment app</title>
     <style>
@@ -28,26 +29,34 @@
             padding-top: 300px;
         }
 
+        #helpbtn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+        }
+
+        #helpText {
+            display: none;
+        }
+
         /* .message{
             position:absolute;
             top:20px;
             right:20px;
         } */
     </style>
-    <script
-    src="https://code.jquery.com/jquery-3.4.1.min.js"
-    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-    crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 </head>
 
 <body>
     <!-- <h1 class="ui header">你好，我是一个帮助你检测视频评论情绪的工具.</h1> -->
-    <div class="ui disabled dimmer" id = "loader">
-            <div class="ui text loader">加载中...</div>
+    <div class="ui disabled dimmer" id="loader">
+        <div class="ui text loader">加载中...</div>
     </div>
     <form action="/analysis" method="POST" id="form" class="ui big form">
-        <div class="field">
-            <label>视频链接</label>
+        <div class="field animated bounceInDown">
+            <label>请输入视频链接</label>
             <div class="ui labeled action input" id="inputArea">
                 <div class="ui label">
                     https://
@@ -62,8 +71,8 @@
                     </div>
                 </button>
             </div>
-            <div class="ui error message">
-                <i class="close icon"></i>
+            <div class="ui error message" id="errContainer">
+                <i class="close icon" onclick="exit()" id="closeIcon"></i>
                 <div class="header" id="errmsg"></div>
             </div>
         </div>
@@ -72,34 +81,52 @@
         </div>
         <br> -->
     </form>
+    <a href="ca-docs.rtfd.io" class="circular ui icon button white" id="helpbtn">
+        <i class="question icon"></i>
+    </a>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+
     <script>
 
     </script>
     <script>
-        $('.message .close')
-            .on('click', function () {
-                $(this)
-                    .closest('.message')
-                    .transition('fade')
-                    ;
-            })
-            ;
+        $('#helpbtn').transition('fly up in');
+        $("#helpbtn").hover(
+            function(){
+                $('#helpbtn').transition("set looping")
+                $('#helpbtn').transition('jiggle','1000ms')
+            },
+            function(){
+                $('#helpbtn').transition("remove looping")
+            }
+        )
         var expression = /(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/i;
         var regex = new RegExp(expression)
         errmsg = document.getElementById("errmsg")
         form = document.getElementById("form")
+        errContainer = document.getElementById("errContainer")
+        function exit() {
+            errContainer.className = "ui err message animated flipOutX"
+        }
         function validate() {
-            if (form.url.value == "") {
+            url = form.url.value
+            if (url == "") {
                 form.className = "ui big form error"
+                errContainer.className = "ui error message animated flipInX"
                 errmsg.innerHTML = "你没有输入链接"
-            }else if(!form.url.value.match(regex)){
+            } else if (!url.match(regex)) {
                 form.className = "ui big form error"
+                errContainer.className = "ui error message animated flipInX"
                 errmsg.innerHTML = "请输入有效链接"
-            }else {
+            } else if ((url.search("youku") + url.search("bilibili") + url.search("qq")) < (-2)) {
+                form.className = "ui big form error"
+                errContainer.className = "ui error message animated flipInX"
+                errmsg.innerHTML = "不支持这个链接"
+            } else {
                 form.className = "ui big form"
-                inputArea.className="ui labeled action input"
-                loader.className="ui active dimmer"
+                inputArea.className = "ui labeled action input"
+                errContainer.className = "ui error message animated hinge"
+                loader.className = "ui active dimmer"
                 form.submit()
             }
         }
