@@ -6,7 +6,8 @@ import re
 import os
 from json import loads
 with open('config.json') as f:
-    data = loads(f)
+    d = f.readlines()[0]
+    data = loads(d)
     commentsMax = data['commentsMax']
     PAGEMAX = data['pageMax']
 def stp_gbk(comment):
