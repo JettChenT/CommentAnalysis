@@ -1,7 +1,5 @@
 # 一个分析视频评论的工具
 
-### python 创意编程参赛作品，请勿抄袭，谢谢。
-
 ### 如何运行这个程序
 - 打开命令行
 - `pip install -r requirements.txt`
