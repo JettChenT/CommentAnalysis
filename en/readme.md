@@ -2,7 +2,7 @@
 
 ### How to run this program
 
-- 打开命令行
+- Open your terminal
 - `pip install -r requirements.txt`
 - `python app.py`
 - Open your browser (recommended to use Google Chrome)
@@ -14,14 +14,14 @@
 - www.youku.com
 - v.qq.com
 
-### 情感指数
+### Sentiment index
 
 - The sentiment index reflects the emotional tendency of a sentence.
 - The emotional index is up to 1 and the lowest is -1
 - Above 0 is a positive mood, positive emotions increase as the number increases
 - Below 0 is a negative mood, and negative emotions decrease as the number decreases.
 
-### 如何读直方图
+### How to read the histogram
 
 - Emotional index on the x-axis
 - The emotional index on the y-axis indicates how many comments correspond to the emotional index on the x-axis
